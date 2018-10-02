@@ -41,32 +41,40 @@
             app:title="@string/app_name" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <fragment
-            android:id="@+id/navhost_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/player_fragment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1"
-            app:navGraph="@navigation/nav_main"
-            app:defaultNavHost="true" />
+            android:id="@+id/podcast_list_fragment"
+            android:name="com.podcatcher.deluxe.fragments.PodcastListFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout="@layout/podcast_list_fragment" />
 
-        <fragment
-            android:id="@+id/player_fragment"
-            android:name="com.podcatcher.deluxe.fragments.PlayerFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/navhost_fragment"
-            tools:layout="@layout/player_fragment" />
-    </android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/navhost_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:navGraph="@navigation/nav_main"
+                app:defaultNavHost="true" />
+
+            <fragment
+                android:id="@+id/player_fragment"
+                android:name="com.podcatcher.deluxe.fragments.PlayerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/player_fragment" />
+        </LinearLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

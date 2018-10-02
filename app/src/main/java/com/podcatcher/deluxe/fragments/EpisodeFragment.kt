@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-/** Copyright 2018 Kevin Hausmann
+/**
+ * Copyright 2018 Kevin Hausmann
  *
  * This file is part of Podcatcher Deluxe.
  *
@@ -15,8 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
--->
-<resources>
-    <string name="podcast_none_selected">No podcast selected</string>
-    <string name="settings">Settings</string>
-</resources>
+package com.podcatcher.deluxe.fragments
+
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.podcatcher.deluxe.R
+
+class EpisodeFragment : Fragment() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        return inflater.inflate(R.layout.episode_fragment, container,false)
+    }
+}

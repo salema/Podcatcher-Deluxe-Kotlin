@@ -16,7 +16,20 @@
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources>
-    <string name="podcast_none_selected">No podcast selected</string>
-    <string name="settings">Settings</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="net.alliknow.podcatcher.PodcastActivity">
+    <item
+        android:id="@+id/action_select_all_podcasts"
+        android:title="Select all podcasts"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_show_downloads"
+        android:title="Downloads"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_show_playlist"
+        android:title="Playlist"
+        app:showAsAction="never" />
+</menu>

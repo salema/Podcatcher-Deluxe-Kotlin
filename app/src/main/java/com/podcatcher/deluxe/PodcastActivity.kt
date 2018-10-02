@@ -17,13 +17,64 @@
  */
 package com.podcatcher.deluxe
 
+import android.content.pm.ActivityInfo
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.PopupMenu
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.navigation.Navigation
+import kotlinx.android.synthetic.main.podcast_activity.*
+
+fun Resources.isLandscape(): Boolean {
+    return configuration.orientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+}
+
+fun Resources.isSmall(): Boolean {
+    return configuration.smallestScreenWidthDp < 600
+}
 
 class PodcastActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.podcast_activity)
+
+        setSupportActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.menu_action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showToolbarPopup(view: View) {
+        val popup = PopupMenu(this, view)
+        popup.inflate(R.menu.menu_toolbar)
+        popup.setOnMenuItemClickListener{
+            when (it.itemId) {
+                R.id.action_select_all_podcasts,
+                R.id.action_show_downloads,
+                R.id.action_show_playlist -> {
+                    // Update LiveData
+
+                    if (resources.isSmall())
+                        Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popup.show()
     }
 }
