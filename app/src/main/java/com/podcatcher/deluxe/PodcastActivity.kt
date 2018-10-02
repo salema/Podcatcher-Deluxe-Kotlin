@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-/** Copyright 2018 Kevin Hausmann
+/**
+ * Copyright 2018 Kevin Hausmann
  *
  * This file is part of Podcatcher Deluxe.
  *
@@ -15,7 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
--->
-<resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
-</resources>
+package com.podcatcher.deluxe
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+
+class PodcastActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.podcast_activity)
+    }
+}

@@ -17,5 +17,7 @@
  */
 -->
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="colorPrimary">#ffbb9acc</color>
+    <color name="colorPrimaryDark">@android:color/holo_purple</color>
+    <color name="colorAccent">#D81B60</color>
 </resources>

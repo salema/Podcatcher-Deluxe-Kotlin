@@ -17,5 +17,5 @@
  */
 -->
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <string name="app_name" translatable="false">Podcatcher Deluxe</string>
 </resources>
