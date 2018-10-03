@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2018 Kevin Hausmann
  *
  * This file is part of Podcatcher Deluxe.
