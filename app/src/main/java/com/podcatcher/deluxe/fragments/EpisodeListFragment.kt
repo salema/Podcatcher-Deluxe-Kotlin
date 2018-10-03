@@ -17,15 +17,15 @@
  */
 package com.podcatcher.deluxe.fragments
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import kotlinx.android.synthetic.main.episode_list_fragment.*
 
-class EpisodeListFragment : Fragment() {
+class EpisodeListFragment : AbstractPodcastFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -38,14 +38,28 @@ class EpisodeListFragment : Fragment() {
         activity?.menuInflater?.inflate(R.menu.menu_episodelist, menu)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        model.selectedPodcast.observe(this, Observer<String> { string ->
+            message.text = string
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         select_episode_button.setOnClickListener {
-            // Update LiveData
+            model.selectedEpisode.value = "Episode list episode"
 
             if (isSmall())
                     Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_episodes_episode)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        message.text = model.selectedPodcast.value
     }
 }

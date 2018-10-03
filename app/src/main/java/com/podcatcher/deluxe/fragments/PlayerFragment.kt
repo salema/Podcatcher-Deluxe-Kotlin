@@ -18,14 +18,13 @@
 package com.podcatcher.deluxe.fragments
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import kotlinx.android.synthetic.main.player_fragment.*
 
-class PlayerFragment : Fragment() {
+class PlayerFragment : AbstractPodcastFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -42,7 +41,7 @@ class PlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         select_episode_button.setOnClickListener {
-            // Update LiveData
+            model.selectedEpisode.value = "Player Episode"
 
             if (isSmall())
                 Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_global_episode)

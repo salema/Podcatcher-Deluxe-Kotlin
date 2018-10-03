@@ -19,17 +19,14 @@ package com.podcatcher.deluxe.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
 import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
-import com.podcatcher.deluxe.isLandscape
-import com.podcatcher.deluxe.isSmall
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 
-class PodcastListFragment : Fragment() {
+class PodcastListFragment : AbstractPodcastFragment() {
 
     private var wasInflated : Boolean = false
     private var actAsDummy : Boolean = false
@@ -60,7 +57,7 @@ class PodcastListFragment : Fragment() {
 
         if (!actAsDummy)
             select_podcast_button.setOnClickListener {
-                // Update LiveData
+                model.selectedPodcast.value = "Podcast at position x"
 
                 if (isSmall())
                     Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)

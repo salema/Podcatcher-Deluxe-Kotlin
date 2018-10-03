@@ -17,36 +17,20 @@
  */
 package com.podcatcher.deluxe.fragments
 
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.view.*
-import com.podcatcher.deluxe.R
-import kotlinx.android.synthetic.main.episode_fragment.*
+import android.support.v4.app.Fragment
+import com.podcatcher.deluxe.model.PodcastViewModel
 
-class EpisodeFragment : AbstractPodcastFragment() {
+abstract class AbstractPodcastFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
-        setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.episode_fragment, container,false)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_episode, menu)
-    }
+    protected lateinit var model: PodcastViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        model.selectedEpisode.observe(this, Observer<String> { string ->
-            message.text = string
-        })
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        message.text = model.selectedEpisode.value
+        model = activity?.run {
+            ViewModelProviders.of(this).get(PodcastViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
     }
 }

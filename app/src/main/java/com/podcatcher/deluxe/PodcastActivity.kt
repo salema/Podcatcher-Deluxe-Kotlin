@@ -17,8 +17,7 @@
  */
 package com.podcatcher.deluxe
 
-import android.content.pm.ActivityInfo
-import android.content.res.Resources
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.PopupMenu
@@ -26,15 +25,20 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.navigation.Navigation
+import com.podcatcher.deluxe.model.PodcastViewModel
 import kotlinx.android.synthetic.main.podcast_activity.*
 
 class PodcastActivity : AppCompatActivity() {
+
+    private lateinit var model: PodcastViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.podcast_activity)
 
         setSupportActionBar(toolbar)
+
+        model = ViewModelProviders.of(this).get(PodcastViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,19 +54,22 @@ class PodcastActivity : AppCompatActivity() {
     }
 
     fun showToolbarPopup(view: View) {
+        fun selectPodcastAndNavigate(podcast: String): Boolean {
+            model.selectedPodcast.value = podcast
+
+            if (resources.configuration.isSmall())
+                Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
+
+            return true
+        }
+
         val popup = PopupMenu(this, view)
         popup.inflate(R.menu.menu_toolbar)
         popup.setOnMenuItemClickListener{
             when (it.itemId) {
-                R.id.menu_action_select_all_podcasts,
-                R.id.menu_action_show_downloads,
-                R.id.menu_action_show_playlist -> {
-                    // Update LiveData
-
-                    if (resources.configuration.isSmall())
-                        Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
-                    true
-                }
+                R.id.menu_action_select_all_podcasts -> selectPodcastAndNavigate("All podcasts")
+                R.id.menu_action_show_downloads ->selectPodcastAndNavigate("Downloads")
+                R.id.menu_action_show_playlist -> selectPodcastAndNavigate("Playlist")
                 else -> false
             }
         }

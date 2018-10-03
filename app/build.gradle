@@ -50,15 +50,9 @@ android {
     }
     variantFilter { final variant ->
         // Ignore all variants we do not need: release and videoSimple
-        if (variant.buildType.name.equals('release') ||
-                (variant.flavors.get(0).name.equals('video') && variant.flavors.get(1).name.equals('simple'))) {
-            variant.setIgnore(true);
-        }
-
-        // Ignore all variants we do not need: Samsung and not simple
-        if (variant.buildType.name.equals('samsung') &&
-                !(variant.flavors.get(0).name.equals('audio') && variant.flavors.get(1).name.equals('simple'))) {
-            variant.setIgnore(true);
+        if (variant.buildType.name == 'release' ||
+                (variant.flavors.get(0).name == 'video' && variant.flavors.get(1).name == 'simple')) {
+            variant.setIgnore(true)
         }
     }
 }
@@ -67,10 +61,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    implementation "android.arch.navigation:navigation-fragment-ktx:+"
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'android.arch.navigation:navigation-fragment-ktx:+'
+    implementation 'android.arch.lifecycle:extensions:+'
 }
