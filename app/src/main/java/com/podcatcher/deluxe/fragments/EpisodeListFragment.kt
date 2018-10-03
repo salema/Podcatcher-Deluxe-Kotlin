@@ -20,9 +20,7 @@ package com.podcatcher.deluxe.fragments
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import kotlinx.android.synthetic.main.episode_list_fragment.*
@@ -31,7 +29,13 @@ class EpisodeListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.episode_list_fragment, container,false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        activity?.menuInflater?.inflate(R.menu.menu_episodelist, menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

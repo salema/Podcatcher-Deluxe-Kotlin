@@ -1,5 +1,5 @@
-/**
- * Copyright 2018 Kevin Hausmann
+<?xml version="1.0" encoding="utf-8"?><!--
+/** Copyright 2018 Kevin Hausmann
  *
  * This file is part of Podcatcher Deluxe.
  *
@@ -15,23 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.podcatcher.deluxe.fragments
-
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.*
-import com.podcatcher.deluxe.R
-
-class EpisodeFragment : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
-        setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.episode_fragment, container,false)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_episode, menu)
-    }
-}
+-->
+<resources>
+    <string name="episodes_filter_all">All</string>
+    <string name="playlist">Playlist</string>
+</resources>

@@ -28,14 +28,6 @@ import android.view.View
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.podcast_activity.*
 
-fun Resources.isLandscape(): Boolean {
-    return configuration.orientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-}
-
-fun Resources.isSmall(): Boolean {
-    return configuration.smallestScreenWidthDp < 600
-}
-
 class PodcastActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,12 +54,12 @@ class PodcastActivity : AppCompatActivity() {
         popup.inflate(R.menu.menu_toolbar)
         popup.setOnMenuItemClickListener{
             when (it.itemId) {
-                R.id.action_select_all_podcasts,
-                R.id.action_show_downloads,
-                R.id.action_show_playlist -> {
+                R.id.menu_action_select_all_podcasts,
+                R.id.menu_action_show_downloads,
+                R.id.menu_action_show_playlist -> {
                     // Update LiveData
 
-                    if (resources.isSmall())
+                    if (resources.configuration.isSmall())
                         Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
                     true
                 }

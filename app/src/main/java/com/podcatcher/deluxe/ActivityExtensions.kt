@@ -15,23 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.podcatcher.deluxe.fragments
+package com.podcatcher.deluxe
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.*
-import com.podcatcher.deluxe.R
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 
-class EpisodeFragment : Fragment() {
+fun Configuration.isLandscape(): Boolean {
+    return orientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
-        setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.episode_fragment, container,false)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_episode, menu)
-    }
+fun Configuration.isSmall(): Boolean {
+    return smallestScreenWidthDp < 600
 }

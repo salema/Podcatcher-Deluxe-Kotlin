@@ -19,17 +19,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="net.alliknow.podcatcher.PodcastActivity">
+    tools:context=".PodcastActivity">
+
     <item
-        android:id="@+id/action_select_all_podcasts"
-        android:title="Select all podcasts"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_show_downloads"
-        android:title="Downloads"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_show_playlist"
-        android:title="Playlist"
-        app:showAsAction="never" />
+        android:id="@+id/menu_action_toggle_sort"
+        android:title="@string/episodes_sort_toggle"
+        android:icon="@drawable/ic_sort"
+        android:orderInCategory="2"
+        app:showAsAction="always" />
 </menu>

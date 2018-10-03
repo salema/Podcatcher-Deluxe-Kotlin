@@ -16,13 +16,20 @@
  * along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources>
-    <string name="play">Play</string>
-    <string name="podcast_select_all">Select all podcasts</string>
-    <string name="podcast_none_selected">No podcast selected</string>
-    <string name="podcast_add_title">New podcast</string>
-    <string name="episodes_sort_toggle">Reverse order</string>
-    <string name="download">Download</string>
-    <string name="downloads">Downloads</string>
-    <string name="settings">Settings</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PodcastActivity">
+    <item
+        android:id="@+id/menu_action_select_all_podcasts"
+        android:title="@string/podcast_select_all"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_action_show_downloads"
+        android:title="@string/downloads"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_action_show_playlist"
+        android:title="@string/playlist"
+        app:showAsAction="never" />
+</menu>

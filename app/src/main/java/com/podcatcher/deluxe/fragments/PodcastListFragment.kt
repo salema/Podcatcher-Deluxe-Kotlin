@@ -22,41 +22,38 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.isLandscape
 import com.podcatcher.deluxe.isSmall
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
 
-fun Fragment.isLandscape(): Boolean {
-    return resources.isLandscape()
-}
-
-fun Fragment.isSmall(): Boolean {
-    return resources.isSmall()
-}
-
 class PodcastListFragment : Fragment() {
 
-    private var wasInfalted : Boolean = false
+    private var wasInflated : Boolean = false
     private var actAsDummy : Boolean = false
 
     override fun onInflate(context: Context?, attrs: AttributeSet?, savedInstanceState: Bundle?) {
         super.onInflate(context, attrs, savedInstanceState)
 
-        wasInfalted = true
+        wasInflated = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        actAsDummy = !wasInfalted && isSmall() && isLandscape()
+        actAsDummy = !wasInflated && isSmall() && isLandscape()
+
+        setHasOptionsMenu(!actAsDummy)
         return inflater.inflate(
                 if (actAsDummy) R.layout.podcast_list_fragment_empty else R.layout.podcast_list_fragment,
-                container,false)    }
+                container,false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        activity?.menuInflater?.inflate(R.menu.menu_podcastlist, menu)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
