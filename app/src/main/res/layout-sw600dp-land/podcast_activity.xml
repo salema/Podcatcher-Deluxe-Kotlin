@@ -35,15 +35,14 @@
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             android:onClick="showToolbarPopup"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/app_name" />
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <fragment
             android:id="@+id/podcast_list_fragment"
