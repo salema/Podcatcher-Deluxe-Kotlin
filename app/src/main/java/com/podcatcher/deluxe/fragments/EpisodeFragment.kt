@@ -21,6 +21,7 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.view.*
 import com.podcatcher.deluxe.R
+import com.podcatcher.deluxe.model.types.Episode
 import kotlinx.android.synthetic.main.episode_fragment.*
 
 class EpisodeFragment : AbstractPodcastFragment() {
@@ -39,14 +40,14 @@ class EpisodeFragment : AbstractPodcastFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        model.selectedEpisode.observe(this, Observer<String> { string ->
-            message.text = string
+        model.selectedEpisode.observe(this, Observer<Episode> { episode ->
+            message.text = episode?.name ?: "Null!"
         })
     }
 
     override fun onResume() {
         super.onResume()
 
-        message.text = model.selectedEpisode.value
+        message.text = model.selectedEpisode.value?.name ?: "Null!"
     }
 }

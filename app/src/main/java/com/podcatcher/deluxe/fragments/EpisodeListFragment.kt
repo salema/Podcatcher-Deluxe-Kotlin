@@ -23,6 +23,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
+import com.podcatcher.deluxe.model.types.Episode
+import com.podcatcher.deluxe.model.types.Podcast
 import kotlinx.android.synthetic.main.episode_list_fragment.*
 
 class EpisodeListFragment : AbstractPodcastFragment() {
@@ -41,8 +43,8 @@ class EpisodeListFragment : AbstractPodcastFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        model.selectedPodcast.observe(this, Observer<String> { string ->
-            message.text = string
+        model.selectedPodcast.observe(this, Observer<Podcast> { podcast ->
+            message.text = podcast?.name ?: "Null!"
         })
     }
 
@@ -50,16 +52,20 @@ class EpisodeListFragment : AbstractPodcastFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         select_episode_button.setOnClickListener {
-            model.selectedEpisode.value = "Episode list episode"
+            model.selectedEpisode.value = Episode("Episode list episode", "")
 
             if (isSmall())
                     Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_episodes_episode)
+        }
+        add_podcast_button.setOnClickListener {
+            val newPodcast = Podcast("Testpodcast", "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png", "", listOf())
+            model.podcasts.value = listOf(newPodcast) + model.podcasts.value!!
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        message.text = model.selectedPodcast.value
+        message.text = model.selectedPodcast.value?.name ?: "Null!"
     }
 }

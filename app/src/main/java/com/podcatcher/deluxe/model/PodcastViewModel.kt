@@ -20,9 +20,21 @@ package com.podcatcher.deluxe.model
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
+import com.podcatcher.deluxe.model.types.Episode
+import com.podcatcher.deluxe.model.types.Podcast
 
 class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
-    val selectedPodcast: MutableLiveData<String> by lazy { MutableLiveData<String>() }
-    val selectedEpisode: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val selectedPodcast: MutableLiveData<Podcast> by lazy { MutableLiveData<Podcast>() }
+    val selectedEpisode: MutableLiveData<Episode> by lazy { MutableLiveData<Episode>() }
+
+    val podcasts: MutableLiveData<List<Podcast>> by lazy {
+        val list = MutableLiveData<List<Podcast>>()
+        list.value = listOf(
+                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://", listOf(Episode("Titel 1", "http"))),
+                Podcast("This American Life", "http://cdn2.spiegel.de/images/image-1286029-thumb-wrnq-1286029.jpg", "http://", listOf(Episode("Titel 1", "http")))
+        )
+
+        list
+    }
 }

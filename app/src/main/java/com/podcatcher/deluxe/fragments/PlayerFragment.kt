@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
+import com.podcatcher.deluxe.model.types.Episode
 import kotlinx.android.synthetic.main.player_fragment.*
 
 class PlayerFragment : AbstractPodcastFragment() {
@@ -41,7 +42,7 @@ class PlayerFragment : AbstractPodcastFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         select_episode_button.setOnClickListener {
-            model.selectedEpisode.value = "Player Episode"
+            model.selectedEpisode.value = Episode("Player Episode", "")
 
             if (isSmall())
                 Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_global_episode)

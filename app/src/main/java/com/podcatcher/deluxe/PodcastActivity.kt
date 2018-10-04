@@ -26,6 +26,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.model.PodcastViewModel
+import com.podcatcher.deluxe.model.types.Podcast
 import kotlinx.android.synthetic.main.podcast_activity.*
 
 class PodcastActivity : AppCompatActivity() {
@@ -55,7 +56,7 @@ class PodcastActivity : AppCompatActivity() {
 
     fun showToolbarPopup(view: View) {
         fun selectPodcastAndNavigate(podcast: String): Boolean {
-            model.selectedPodcast.value = podcast
+            model.selectedPodcast.value = Podcast(podcast, "", "", listOf())
 
             if (resources.configuration.isSmall())
                 Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
