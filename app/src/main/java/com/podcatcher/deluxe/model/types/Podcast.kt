@@ -18,4 +18,9 @@
 
 package com.podcatcher.deluxe.model.types
 
-data class Podcast(val name: String, val logo: String, var feed: String, val episodes: List<Episode>)
+data class Podcast(val name: String, val logo: String, var feed: String, val episodes: MutableList<Episode>) : Comparable<Podcast> {
+
+    override fun compareTo(other: Podcast): Int {
+        return this.name.compareTo(other.name)
+    }
+}

@@ -15,26 +15,50 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:orientation="horizontal">
+    tools:context=".PodcastActivity">
 
     <TextView
         android:id="@+id/podcast_title"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="28dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:gravity="center_vertical"
         android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/podcast_logo"
+        app:layout_constraintBottom_toTopOf="@id/podcast_caption"
         tools:text="Podcast title" />
+
+    <TextView
+        android:id="@+id/podcast_caption"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_weight="1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:gravity="center_vertical"
+        android:textAppearance="?attr/textAppearanceListItemSecondary"
+        app:layout_constraintTop_toBottomOf="@id/podcast_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/podcast_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Podcast caption" />
 
     <ImageView
         android:id="@+id/podcast_logo"
         android:layout_width="48dp"
         android:layout_height="match_parent"
+        android:padding="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/podcast_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

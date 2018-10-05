@@ -55,11 +55,7 @@ class EpisodeListFragment : AbstractPodcastFragment() {
             model.selectedEpisode.value = Episode("Episode list episode", "")
 
             if (isSmall())
-                    Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_episodes_episode)
-        }
-        add_podcast_button.setOnClickListener {
-            val newPodcast = Podcast("Testpodcast", "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png", "", listOf())
-            model.podcasts.value = listOf(newPodcast) + model.podcasts.value!!
+                Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_episodes_episode)
         }
     }
 

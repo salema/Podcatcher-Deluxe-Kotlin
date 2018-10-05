@@ -56,7 +56,7 @@ class PodcastActivity : AppCompatActivity() {
 
     fun showToolbarPopup(view: View) {
         fun selectPodcastAndNavigate(podcast: String): Boolean {
-            model.selectedPodcast.value = Podcast(podcast, "", "", listOf())
+            model.selectedPodcast.value = Podcast(podcast, "", "", mutableListOf())
 
             if (resources.configuration.isSmall())
                 Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)

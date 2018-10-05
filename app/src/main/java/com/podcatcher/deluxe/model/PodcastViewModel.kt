@@ -19,22 +19,35 @@ package com.podcatcher.deluxe.model
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.podcatcher.deluxe.model.types.Episode
 import com.podcatcher.deluxe.model.types.Podcast
+import java.util.*
 
 class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
     val selectedPodcast: MutableLiveData<Podcast> by lazy { MutableLiveData<Podcast>() }
     val selectedEpisode: MutableLiveData<Episode> by lazy { MutableLiveData<Episode>() }
 
-    val podcasts: MutableLiveData<List<Podcast>> by lazy {
-        val list = MutableLiveData<List<Podcast>>()
-        list.value = listOf(
-                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://", listOf(Episode("Titel 1", "http"))),
-                Podcast("This American Life", "http://cdn2.spiegel.de/images/image-1286029-thumb-wrnq-1286029.jpg", "http://", listOf(Episode("Titel 1", "http")))
-        )
+    private lateinit var podcastList: MutableLiveData<List<Podcast>>
+    val podcasts: LiveData<List<Podcast>> by lazy {
+        podcastList = MutableLiveData<List<Podcast>>()
+        podcastList.value = listOf(
+                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://1", mutableListOf(Episode("Titel 1", "http"))),
+                Podcast("This American Life", "http://cdn2.spiegel.de/images/image-1286029-thumb-wrnq-1286029.jpg", "http://2", mutableListOf(Episode("Titel 1", "http")))
+        ).sorted()
 
-        list
+        podcastList
+    }
+
+    fun addPodcastAtRandomPosition() {
+        val position = Random().nextInt(podcastList.value?.size ?: 1)
+        val newPodcast = Podcast("Testpodcast", "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png", UUID.randomUUID().toString(), mutableListOf())
+
+        val newList = podcastList.value?.toMutableList()
+        newList?.add(position, newPodcast)
+
+        podcastList.value = newList?.sorted()
     }
 }

@@ -77,6 +77,16 @@ class PodcastListFragment : AbstractPodcastFragment(), OnPodcastSelectedListener
         activity?.menuInflater?.inflate(R.menu.menu_podcastlist, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.menu_action_add_podcast -> {
+                model.addPodcastAtRandomPosition()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -138,6 +148,7 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
         val podcast = getItem(position)
 
         holder.titleView.text = podcast.name
+        holder.captionView.text = podcast.episodes.size.toString() + " episodes"
         Picasso.get().load(podcast.logo).into(holder.logoView)
 
         holder.view.setOnClickListener() {
@@ -147,6 +158,7 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val titleView: TextView = view.podcast_title
+        val captionView: TextView = view.podcast_caption
         val logoView: ImageView = view.podcast_logo
     }
 
