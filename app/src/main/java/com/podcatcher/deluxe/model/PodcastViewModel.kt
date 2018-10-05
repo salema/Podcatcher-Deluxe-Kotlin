@@ -18,9 +18,9 @@
 package com.podcatcher.deluxe.model
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.podcatcher.deluxe.model.types.Episode
 import com.podcatcher.deluxe.model.types.Podcast
 import java.util.*

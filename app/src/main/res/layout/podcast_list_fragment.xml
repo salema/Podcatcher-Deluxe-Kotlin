@@ -15,14 +15,14 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
   -->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PodcastActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/podcast_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -32,5 +32,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:context="com.podcatcher.deluxe.fragments.PodcastListFragment"
         tools:listitem="@layout/podcast_list_item" />
-
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

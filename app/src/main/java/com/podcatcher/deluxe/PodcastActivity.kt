@@ -17,13 +17,13 @@
  */
 package com.podcatcher.deluxe
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.PopupMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.model.PodcastViewModel
 import com.podcatcher.deluxe.model.types.Podcast

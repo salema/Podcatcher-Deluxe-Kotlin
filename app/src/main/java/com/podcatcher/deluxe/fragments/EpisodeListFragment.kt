@@ -17,10 +17,10 @@
  */
 package com.podcatcher.deluxe.fragments
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.types.Episode

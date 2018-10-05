@@ -17,7 +17,7 @@
  */
 package com.podcatcher.deluxe.fragments
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.podcatcher.deluxe.isLandscape
 import com.podcatcher.deluxe.isSmall
 

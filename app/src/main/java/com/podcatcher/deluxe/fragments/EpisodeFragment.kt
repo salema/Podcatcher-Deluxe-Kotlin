@@ -17,9 +17,9 @@
  */
 package com.podcatcher.deluxe.fragments
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.Observer
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.types.Episode
 import kotlinx.android.synthetic.main.episode_fragment.*
