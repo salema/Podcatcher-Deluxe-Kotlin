@@ -19,7 +19,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     tools:context=".PodcastActivity">
 
     <TextView
@@ -41,20 +41,44 @@
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:gravity="center_vertical"
         android:textAppearance="?attr/textAppearanceListItemSecondary"
         app:layout_constraintTop_toBottomOf="@id/podcast_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/podcast_logo"
+        app:layout_constraintEnd_toStartOf="@id/podcast_progress"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Podcast caption" />
+
+    <ProgressBar
+        android:id="@+id/podcast_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/podcast_title"
+        app:layout_constraintStart_toEndOf="@+id/podcast_caption"
+        app:layout_constraintEnd_toStartOf="@id/podcast_new_count"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/podcast_new_count"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_episodes_new"
+        android:drawablePadding="0dp"
+        app:layout_constraintTop_toBottomOf="@id/podcast_title"
+        app:layout_constraintStart_toEndOf="@+id/podcast_progress"
+        app:layout_constraintEnd_toStartOf="@id/podcast_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="1" />
 
     <ImageView
         android:id="@+id/podcast_logo"
         android:layout_width="48dp"
-        android:layout_height="match_parent"
+        android:layout_height="48dp"
         android:padding="1dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/podcast_title"

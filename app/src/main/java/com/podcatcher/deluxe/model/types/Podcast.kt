@@ -18,9 +18,22 @@
 
 package com.podcatcher.deluxe.model.types
 
+import java.util.*
+
 data class Podcast(val name: String, val logo: String, var feed: String, val episodes: MutableList<Episode>) : Comparable<Podcast> {
+
+
+    fun getStatus(): Int {
+        return Random().nextInt(2)
+    }
 
     override fun compareTo(other: Podcast): Int {
         return this.name.compareTo(other.name)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        // TODO omit http(s) and www. in comparison
+
+        return super.equals(other)
     }
 }

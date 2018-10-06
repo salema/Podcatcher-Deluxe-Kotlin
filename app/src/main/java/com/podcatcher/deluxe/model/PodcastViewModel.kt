@@ -40,6 +40,13 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
         podcastList
     }
+/*
+    private val _podcastList = mutableListOf<Podcast>()
+    val podcastLis: LiveData<List<Podcast>>
+        get() {
+
+            return
+        }*/
 
     fun addPodcastAtRandomPosition() {
         val position = Random().nextInt(podcastList.value?.size ?: 1)

@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.view.*
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -89,7 +90,7 @@ class PodcastListFragment : AbstractPodcastFragment(), OnPodcastSelectedListener
         if (!actAsDummy) {
             podcast_list.setHasFixedSize(isSmall()) // TODO Is this accurate for all sizes/layouts?
             podcast_list.layoutManager = LinearLayoutManager(activity)
-            podcast_list.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.HORIZONTAL))
+            podcast_list.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
             podcast_list.adapter = listAdapter
         }
     }
@@ -141,10 +142,21 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val resources = holder.view.resources
         val podcast = getItem(position)
+        val status = podcast.getStatus()
 
         holder.titleView.text = podcast.name
-        holder.captionView.text = podcast.episodes.size.toString() + " episodes"
+        holder.captionView.text =
+                if (status == 0)
+                    resources.getQuantityString(R.plurals.episodes, podcast.episodes.size, podcast.episodes.size)
+                else resources.getText(R.string.podcast_loading)
+
+        holder.progressView.visibility = if (status == 0) View.GONE else View.VISIBLE
+
+        holder.newEpisodesCount.visibility = if (status != 0) View.GONE else View.VISIBLE
+        holder.newEpisodesCount.text = podcast.episodes.size.toString()
+
         Picasso.get().load(podcast.logo).into(holder.logoView)
 
         holder.view.setOnClickListener() {
@@ -155,6 +167,8 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val titleView: TextView = view.podcast_title
         val captionView: TextView = view.podcast_caption
+        val progressView: ProgressBar = view.podcast_progress
+        val newEpisodesCount: TextView = view.podcast_new_count
         val logoView: ImageView = view.podcast_logo
     }
 

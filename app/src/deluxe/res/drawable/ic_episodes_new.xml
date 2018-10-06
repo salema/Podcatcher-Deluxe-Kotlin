@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright 2018 Kevin Hausmann
   ~
   ~ This file is part of Podcatcher Deluxe.
@@ -15,18 +15,13 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Podcatcher Deluxe. If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
-    <string name="play">Play</string>
-    <string name="podcast_select_all">Select all podcasts</string>
-    <string name="podcast_none_selected">No podcast selected</string>
-    <string name="podcast_add_title">New podcast</string>
-    <string name="podcast_loading">Loading&#8230;</string>
-    <string name="episodes_sort_toggle">Reverse order</string>
-    <plurals name="episodes">
-        <item quantity="one">One episode</item>
-        <item quantity="other">%d episodes</item>
-    </plurals>
-    <string name="download">Download</string>
-    <string name="downloads">Downloads</string>
-    <string name="settings">Settings</string>
-</resources>
+<vector android:alpha="0.7"
+    android:height="16dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0"
+    android:width="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M12,17.27L18.18,21l-1.64,-7.03L22,9.24l-7.19,-0.61L12,2 9.19,8.63 2,9.24l5.46,4.73L5.82,21z" />
+</vector>
