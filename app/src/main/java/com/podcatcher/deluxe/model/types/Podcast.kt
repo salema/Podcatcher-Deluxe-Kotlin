@@ -18,14 +18,43 @@
 
 package com.podcatcher.deluxe.model.types
 
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import com.podcatcher.deluxe.BR
 import java.util.*
 
-data class Podcast(val name: String, val logo: String, var feed: String, val episodes: MutableList<Episode>) : Comparable<Podcast> {
+class Podcast(name: String, var feed: String) : BaseObservable(), Comparable<Podcast> {
 
+    constructor(name: String, logo: String, feed: String, episodes: MutableList<Episode>) : this(name, feed) {
+        this.logo = logo
 
-    fun getStatus(): Int {
-        return Random().nextInt(2)
+        this.episodes.clear()
+        this.episodes.addAll(episodes)
     }
+
+    @get:Bindable
+    var name: String = name
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.name)
+        }
+
+    var logo: String? = null
+
+    @get:Bindable
+    val episodes: MutableList<Episode> = mutableListOf()
+
+    fun addEpisode(episode: Episode) {
+        episodes.add(episode)
+        notifyPropertyChanged(BR.episodes)
+    }
+
+    @get:Bindable
+    var status: Int = Random().nextInt(2)
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.status)
+        }
 
     override fun compareTo(other: Podcast): Int {
         return this.name.compareTo(other.name)

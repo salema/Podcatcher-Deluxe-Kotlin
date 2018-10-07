@@ -44,7 +44,7 @@ class EpisodeListFragment : AbstractPodcastFragment() {
         super.onActivityCreated(savedInstanceState)
 
         model.selectedPodcast.observe(this, Observer<Podcast> { podcast ->
-            message.text = podcast?.name ?: "Null!"
+            message.text = podcast.name
         })
     }
 

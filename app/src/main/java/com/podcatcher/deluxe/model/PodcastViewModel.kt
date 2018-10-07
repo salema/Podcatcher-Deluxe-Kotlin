@@ -56,5 +56,8 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
         newList?.add(position, newPodcast)
 
         podcastList.value = newList?.sorted()
+
+        podcastList.value?.forEach { it.status = if (it.status == 0) 1 else 0 }
+        podcastList.value?.forEach { it.addEpisode(Episode("nlsd", "dfd")) }
     }
 }

@@ -21,14 +21,14 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.*
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.*
+import com.podcatcher.deluxe.BR
 import com.podcatcher.deluxe.R
+import com.podcatcher.deluxe.databinding.PodcastListItemBinding
 import com.podcatcher.deluxe.model.types.Podcast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
@@ -131,45 +131,33 @@ private interface OnPodcastSelectedListener {
 /**
  * Recycler view adapter for the podcast list. Uses a diff callback
  * to enable nice animations and alerts the fragment on selection.
+ * The podcast properties are shown using data binding.
  */
 private class PodcastListAdapter(private val listener: OnPodcastSelectedListener)
     : ListAdapter<Podcast, PodcastListAdapter.ViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.podcast_list_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context),
+                R.layout.podcast_list_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val resources = holder.view.resources
-        val podcast = getItem(position)
-        val status = podcast.getStatus()
-
-        holder.titleView.text = podcast.name
-        holder.captionView.text =
-                if (status == 0)
-                    resources.getQuantityString(R.plurals.episodes, podcast.episodes.size, podcast.episodes.size)
-                else resources.getText(R.string.podcast_loading)
-
-        holder.progressView.visibility = if (status == 0) View.GONE else View.VISIBLE
-
-        holder.newEpisodesCount.visibility = if (status != 0) View.GONE else View.VISIBLE
-        holder.newEpisodesCount.text = podcast.episodes.size.toString()
-
-        Picasso.get().load(podcast.logo).into(holder.logoView)
-
-        holder.view.setOnClickListener() {
-            listener.onPodcastSelected(podcast)
-        }
+        holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val titleView: TextView = view.podcast_title
-        val captionView: TextView = view.podcast_caption
-        val progressView: ProgressBar = view.podcast_progress
-        val newEpisodesCount: TextView = view.podcast_new_count
-        val logoView: ImageView = view.podcast_logo
+    inner class ViewHolder(private val binding: PodcastListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(podcast: Podcast) {
+            binding.setVariable(BR.podcast, podcast)
+            binding.executePendingBindings()
+
+            // TODO Make Picasso follow cross-protocol redirects
+            Picasso.get().load(podcast.logo).into(binding.root.podcast_logo)
+
+            binding.root.setOnClickListener() {
+                listener.onPodcastSelected(podcast)
+            }
+        }
     }
 
     companion object {
@@ -181,8 +169,10 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
             }
 
             override fun areContentsTheSame(oldItem: Podcast, newItem: Podcast): Boolean {
-                // TODO Check for the podcast properties actually shown in the list here
-                return oldItem == newItem
+                // TODO Make sure the podcast properties actually shown in the list are compared here
+                return oldItem.name == newItem.name &&
+                        oldItem.status == oldItem.status &&
+                        oldItem.episodes.size == newItem.episodes.size
             }
         }
     }
