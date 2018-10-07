@@ -30,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="vertical"
         tools:context="com.podcatcher.deluxe.fragments.PodcastListFragment"
         tools:listitem="@layout/podcast_list_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
