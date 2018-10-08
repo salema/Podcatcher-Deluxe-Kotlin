@@ -292,7 +292,6 @@ private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewH
             binding.setVariable(BR.podcast, podcast)
             binding.executePendingBindings()
 
-            // TODO Make Picasso follow cross-protocol redirects
             Picasso.get().load(podcast.logo).into(binding.root.podcast_logo)
 
             binding.root.isActivated = selected
