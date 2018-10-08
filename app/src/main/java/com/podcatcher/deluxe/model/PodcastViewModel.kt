@@ -34,8 +34,9 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
     val podcasts: LiveData<List<Podcast>> by lazy {
         podcastList = MutableLiveData<List<Podcast>>()
         podcastList.value = listOf(
-                Podcast("Radiolab", "https://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://1", mutableListOf(Episode("Titel 1", "http"))),
-                Podcast("This American Life", "https://files.thisamericanlife.org/sites/all/themes/thislife/img/tal-name-1400x1400.png", "http://2", mutableListOf(Episode("Titel 1", "http")))
+                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://1", mutableListOf(Episode("Titel 1", "http"))),
+                Podcast("This American Life", "http://files.thisamericanlife.org/sites/all/themes/thislife/img/tal-name-1400x1400.png", "http://2", mutableListOf(Episode("Titel 1", "http"))),
+                Podcast("Angry Animals", "http://goo.gl/FvWi1r", "http://3", mutableListOf(Episode("Titel 1", "http")))
         ).sorted()
 
         podcastList
@@ -49,7 +50,8 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
         }*/
 
     fun addPodcastAtRandomPosition() {
-        val position = Random().nextInt(podcastList.value?.size ?: 1)
+        val position = if (podcastList.value?.size!! > 0) Random().nextInt(podcastList.value?.size
+                ?: 1) else 0
         val newPodcast = Podcast("Testpodcast", "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png", UUID.randomUUID().toString(), mutableListOf())
 
         val newList = podcastList.value?.toMutableList()
