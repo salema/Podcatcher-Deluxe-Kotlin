@@ -17,10 +17,15 @@
   -->
 <resources>
     <string name="play">Play</string>
+    <string name="remove">Delete</string>
     <string name="podcast_select_all">Select all podcasts</string>
     <string name="podcast_none_selected">No podcast selected</string>
     <string name="podcast_add_title">New podcast</string>
     <string name="podcast_loading">Loading&#8230;</string>
+    <plurals name="podcasts">
+        <item quantity="one">One podcast</item>
+        <item quantity="other">%d podcasts</item>
+    </plurals>
     <string name="episodes_sort_toggle">Reverse order</string>
     <plurals name="episodes">
         <item quantity="one">One episode</item>

@@ -25,6 +25,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.ItemKeyProvider
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.*
 import com.podcatcher.deluxe.BR
 import com.podcatcher.deluxe.R
@@ -36,10 +40,32 @@ import kotlinx.android.synthetic.main.podcast_list_item.view.*
 
 /**
  * List fragment to display the list of podcasts.
+ * Selection is handled using a selection tracker.
  */
-class PodcastListFragment : AbstractPodcastFragment(), OnPodcastSelectedListener {
+class PodcastListFragment : AbstractPodcastFragment() {
 
-    private var listAdapter: PodcastListAdapter = PodcastListAdapter(this)
+    companion object {
+        /**
+         * Our selection tracker id. Note that the selection is not carried across
+         * configuration changes on small devices because those use two instances of
+         * the podcast list fragment in landscape mode.
+         * TODO Check if this works on large devices
+         */
+        const val SELECTION_ID = "podcast_list_selection"
+    }
+
+    /**
+     * Our recycler view adapter using ListAdapter
+     */
+    private val listAdapter: PodcastListAdapter = PodcastListAdapter()
+    /**
+     * The selection tracker handle
+     */
+    private lateinit var selectionTracker: SelectionTracker<String>
+    /**
+     * The action mode handling long presses
+     */
+    private var actionMode: ActionMode? = null
 
     /**
      * Since we use the podcast list fragment in two modes when in small
@@ -92,6 +118,19 @@ class PodcastListFragment : AbstractPodcastFragment(), OnPodcastSelectedListener
             podcast_list.layoutManager = LinearLayoutManager(activity)
             podcast_list.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
             podcast_list.adapter = listAdapter
+
+            // Create the selection tracker and register observers
+            selectionTracker = SelectionTracker.Builder<String>(SELECTION_ID,
+                    podcast_list,
+                    PodcastItemKeyProvider(),
+                    PodcastItemDetailsLookup(),
+                    StorageStrategy.createStringStorage())
+                    .withOnItemActivatedListener { item, _ ->
+                        onPodcastSelected(item.position)
+                        true
+                    }.build()
+            selectionTracker.addObserver(PodcastSelectionObserver())
+            listAdapter.selectionTracker = selectionTracker
         }
     }
 
@@ -106,35 +145,134 @@ class PodcastListFragment : AbstractPodcastFragment(), OnPodcastSelectedListener
             model.selectedPodcast.observe(this, Observer<Podcast> {
                 // TODO Handle selection here?
             })
+
+            if (savedInstanceState != null)
+                selectionTracker.onRestoreInstanceState(savedInstanceState)
         }
     }
 
-    override fun onPodcastSelected(podcast: Podcast) {
-        model.selectedPodcast.value = podcast
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (!actAsDummy) {
+            selectionTracker.onSaveInstanceState(outState)
+        }
+    }
+
+    private fun onPodcastSelected(position: Int) {
+        model.selectedPodcast.value = model.podcasts.value?.get(position)
 
         // On small screen, use navigation to show episode list
         if (isSmall())
             Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)
                     .navigate(if (isLandscape()) R.id.nav_action_global_episodes else R.id.nav_action_podcasts_episodes)
     }
-}
-
-private interface OnPodcastSelectedListener {
 
     /**
-     * Callback alerted on podcast list "clicks"
-     * @param podcast The podcast selected in the list
+     * The observer to handle selection changes, moves the activity
+     * in and out of the action mode
      */
-    fun onPodcastSelected(podcast: Podcast)
+    inner class PodcastSelectionObserver : SelectionTracker.SelectionObserver<String>() {
+
+        override fun onSelectionChanged() {
+            if (selectionTracker.hasSelection() && actionMode == null)
+                actionMode = activity?.startActionMode(ActionModeController())
+            else if (!selectionTracker.hasSelection() && actionMode != null) {
+                actionMode?.finish()
+                actionMode = null
+            }
+
+            val count = selectionTracker.selection.size()
+            actionMode?.title = resources.getQuantityString(R.plurals.podcasts, count, count)
+        }
+    }
+
+    /**
+     * Callback for the podcast list context action mode
+     */
+    inner class ActionModeController() : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.menu_podcastlist_context, menu)
+
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            val podcastToRemove = model.podcasts.value?.filter {
+                selectionTracker.selection.contains(it.feed)
+            }
+            if (podcastToRemove != null)
+                model.removePodcast(*podcastToRemove.toTypedArray())
+
+            onDestroyActionMode(mode)
+            return true
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            // This will also make the selection observer finish the mode
+            selectionTracker.clearSelection()
+        }
+    }
+
+    /**
+     * Provides a mapping for podcasts to their list position. Feed URLs are used as unique keys.
+     */
+    inner class PodcastItemKeyProvider() : ItemKeyProvider<String>(ItemKeyProvider.SCOPE_CACHED) {
+
+        override fun getKey(position: Int): String? {
+            return model.podcasts.value?.get(position)?.feed
+        }
+
+        override fun getPosition(key: String): Int {
+            return model.podcasts.value?.indexOfFirst { it.feed == key } ?: -1
+        }
+    }
+
+    /**
+     * Selection tracker helper to find ItemDetails for an input event.
+     */
+    inner class PodcastItemDetailsLookup() : ItemDetailsLookup<String>() {
+
+        override fun getItemDetails(event: MotionEvent): ItemDetails<String>? {
+            val view = podcast_list.findChildViewUnder(event.x, event.y)
+
+            if (view != null && podcast_list.getChildViewHolder(view) is PodcastListAdapter.ViewHolder) {
+                return (podcast_list.getChildViewHolder(view) as PodcastListAdapter.ViewHolder).getItemDetails()
+            }
+
+            return null
+        }
+    }
 }
 
 /**
- * Recycler view adapter for the podcast list. Uses a diff callback
- * to enable nice animations and alerts the fragment on selection.
- * The podcast properties are shown using data binding.
+ * Actual podcast list element details.
  */
-private class PodcastListAdapter(private val listener: OnPodcastSelectedListener)
-    : ListAdapter<Podcast, PodcastListAdapter.ViewHolder>(diffCallback) {
+private class PodcastItemDetail(private val adapterPosition: Int, private val selectionKey: String)
+    : ItemDetailsLookup.ItemDetails<String>() {
+
+    override fun getSelectionKey(): String? {
+        return selectionKey
+    }
+
+    override fun getPosition(): Int {
+        return adapterPosition
+    }
+}
+
+/**
+ * Recycler view adapter for the podcast list. Uses a diff callback to enable nice animations.
+ * Selection is handled by the fragment using a selection tracker. The podcast properties are
+ * shown using data binding.
+ */
+private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewHolder>(diffCallback) {
+
+    lateinit var selectionTracker: SelectionTracker<String>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context),
@@ -142,21 +280,26 @@ private class PodcastListAdapter(private val listener: OnPodcastSelectedListener
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val podcast = getItem(position)
+        holder.bind(podcast, selectionTracker.isSelected(podcast.feed))
     }
 
-    inner class ViewHolder(private val binding: PodcastListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: PodcastListItemBinding)
+        : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(podcast: Podcast) {
+        fun bind(podcast: Podcast, selected: Boolean) {
+            // All the updating is done by Android DataBinding
             binding.setVariable(BR.podcast, podcast)
             binding.executePendingBindings()
 
             // TODO Make Picasso follow cross-protocol redirects
             Picasso.get().load(podcast.logo).into(binding.root.podcast_logo)
 
-            binding.root.setOnClickListener() {
-                listener.onPodcastSelected(podcast)
-            }
+            binding.root.isActivated = selected
+        }
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<String>? {
+            return PodcastItemDetail(adapterPosition, getItem(adapterPosition).feed)
         }
     }
 

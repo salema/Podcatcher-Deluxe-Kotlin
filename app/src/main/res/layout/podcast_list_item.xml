@@ -30,12 +30,14 @@
             type="com.podcatcher.deluxe.model.types.Podcast" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
         android:clickable="true"
-        android:background="?android:attr/selectableItemBackground"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="@drawable/podcast_list_item_background"
         tools:context=".PodcastActivity">
 
         <TextView

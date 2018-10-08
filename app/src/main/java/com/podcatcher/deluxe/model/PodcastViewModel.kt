@@ -34,8 +34,8 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
     val podcasts: LiveData<List<Podcast>> by lazy {
         podcastList = MutableLiveData<List<Podcast>>()
         podcastList.value = listOf(
-                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://1", mutableListOf(Episode("Titel 1", "http"))),
-                Podcast("This American Life", "http://cdn2.spiegel.de/images/image-1286029-thumb-wrnq-1286029.jpg", "http://2", mutableListOf(Episode("Titel 1", "http")))
+                Podcast("Radiolab", "https://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://1", mutableListOf(Episode("Titel 1", "http"))),
+                Podcast("This American Life", "https://files.thisamericanlife.org/sites/all/themes/thislife/img/tal-name-1400x1400.png", "http://2", mutableListOf(Episode("Titel 1", "http")))
         ).sorted()
 
         podcastList
@@ -59,5 +59,9 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
         podcastList.value?.forEach { it.status = if (it.status == 0) 1 else 0 }
         podcastList.value?.forEach { it.addEpisode(Episode("nlsd", "dfd")) }
+    }
+
+    fun removePodcast(vararg podcasts: Podcast) {
+        podcastList.value = podcastList.value?.filterNot { podcasts.contains(it) }
     }
 }
