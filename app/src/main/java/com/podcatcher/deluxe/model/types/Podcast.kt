@@ -21,9 +21,10 @@ package com.podcatcher.deluxe.model.types
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.podcatcher.deluxe.BR
-import java.util.*
 
 class Podcast(name: String, var feed: String) : BaseObservable(), Comparable<Podcast> {
+
+    enum class Status { READY, LOADING, FAILED }
 
     constructor(name: String, logo: String, feed: String, episodes: MutableList<Episode>) : this(name, feed) {
         this.logo = logo
@@ -50,7 +51,7 @@ class Podcast(name: String, var feed: String) : BaseObservable(), Comparable<Pod
     }
 
     @get:Bindable
-    var status: Int = Random().nextInt(2)
+    var status: Status = Status.READY
         set(value) {
             field = value
             notifyPropertyChanged(BR.status)

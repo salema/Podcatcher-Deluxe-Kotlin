@@ -103,7 +103,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.menu_action_add_podcast -> {
-                model.addPodcastAtRandomPosition()
+                model.addPodcast()
                 true
             }
             else -> super.onOptionsItemSelected(item)
