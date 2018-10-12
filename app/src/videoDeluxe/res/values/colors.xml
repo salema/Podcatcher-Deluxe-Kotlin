@@ -19,5 +19,4 @@
     <color name="colorPrimary">@android:color/holo_red_light</color>
     <color name="colorPrimaryDark">@android:color/holo_red_dark</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="list_activated">#d7d7d7</color>
 </resources>

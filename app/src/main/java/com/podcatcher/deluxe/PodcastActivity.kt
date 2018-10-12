@@ -26,7 +26,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.model.PodcastViewModel
-import com.podcatcher.deluxe.model.types.Podcast
+import com.podcatcher.deluxe.model.PodcastViewModel.SpecialEpisodeList
 import kotlinx.android.synthetic.main.podcast_activity.*
 
 class PodcastActivity : AppCompatActivity() {
@@ -55,8 +55,8 @@ class PodcastActivity : AppCompatActivity() {
     }
 
     fun showToolbarPopup(view: View) {
-        fun selectPodcastAndNavigate(podcast: String): Boolean {
-            model.selectedPodcast.value = Podcast(podcast, "", "", mutableListOf())
+        fun selectSpecialListAndNavigate(list: SpecialEpisodeList): Boolean {
+            model.selectSpecialEpisodeList(list)
 
             if (resources.configuration.isSmall())
                 Navigation.findNavController(this, R.id.navhost_fragment).navigate(R.id.nav_action_global_episodes)
@@ -68,9 +68,9 @@ class PodcastActivity : AppCompatActivity() {
         popup.inflate(R.menu.menu_toolbar)
         popup.setOnMenuItemClickListener{
             when (it.itemId) {
-                R.id.menu_action_select_all_podcasts -> selectPodcastAndNavigate("All podcasts")
-                R.id.menu_action_show_downloads ->selectPodcastAndNavigate("Downloads")
-                R.id.menu_action_show_playlist -> selectPodcastAndNavigate("Playlist")
+                R.id.menu_action_select_all_podcasts -> selectSpecialListAndNavigate(SpecialEpisodeList.ALL_PODCASTS)
+                R.id.menu_action_show_downloads -> selectSpecialListAndNavigate(SpecialEpisodeList.DOWNLOADS)
+                R.id.menu_action_show_playlist -> selectSpecialListAndNavigate(SpecialEpisodeList.PLAYLIST)
                 else -> false
             }
         }

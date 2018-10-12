@@ -21,7 +21,10 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -49,7 +52,6 @@ class PodcastListFragment : AbstractPodcastFragment() {
          * Our selection tracker id. Note that the selection is not carried across
          * configuration changes on small devices because those use two instances of
          * the podcast list fragment in landscape mode.
-         * TODO Check if this works on large devices
          */
         const val SELECTION_ID = "podcast_list_selection"
     }
@@ -74,9 +76,10 @@ class PodcastListFragment : AbstractPodcastFragment() {
      */
     private var wasInflated : Boolean = false
     /**
-     * If this fragment instance works in dummy mode (see above)
+     * If this fragment instance works in dummy mode (see above). For this to work
+     * in all cases, it is important for actAsDummy to default to true.
      */
-    private var actAsDummy : Boolean = false
+    private var actAsDummy: Boolean = true
 
     override fun onInflate(context: Context?, attrs: AttributeSet?, savedInstanceState: Bundle?) {
         super.onInflate(context, attrs, savedInstanceState)
@@ -114,10 +117,13 @@ class PodcastListFragment : AbstractPodcastFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!actAsDummy) {
-            podcast_list.setHasFixedSize(isSmall()) // TODO Is this accurate for all sizes/layouts?
-            podcast_list.layoutManager = LinearLayoutManager(activity)
-            podcast_list.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-            podcast_list.adapter = listAdapter
+            // Prepare recyclerview
+            with(podcast_list) {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(activity)
+                addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
+                adapter = listAdapter
+            }
 
             // Create the selection tracker and register observers
             selectionTracker = SelectionTracker.Builder<String>(SELECTION_ID,
@@ -126,11 +132,24 @@ class PodcastListFragment : AbstractPodcastFragment() {
                     PodcastItemDetailsLookup(),
                     StorageStrategy.createStringStorage())
                     .withOnItemActivatedListener { item, _ ->
-                        onPodcastSelected(item.position)
+                        model.selectPodcast(model.podcasts.value?.get(item.position))
+
+                        // On small screen, use navigation to show episode list
+                        if (isSmall())
+                            Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)
+                                    .navigate(if (isLandscape()) R.id.nav_action_global_episodes else R.id.nav_action_podcasts_episodes)
+
                         true
                     }.build()
             selectionTracker.addObserver(PodcastSelectionObserver())
+
+            // Prepare list adapter
+            listAdapter.showLogos = !isLandscape()
+            listAdapter.highlightLastTapped = !isSmall() || isLandscape()
             listAdapter.selectionTracker = selectionTracker
+
+            // Big, non-inline logos are only shown on large screens in landscape
+            podcast_logo_large.visibility = if (!isSmall() && isLandscape()) VISIBLE else GONE
         }
     }
 
@@ -138,34 +157,52 @@ class PodcastListFragment : AbstractPodcastFragment() {
         super.onActivityCreated(savedInstanceState)
 
         if (!actAsDummy) {
+            model.selectedPodcast.observe(this, Observer {
+                onPodcastSelected(it)
+            })
             model.podcasts.observe(this, Observer<List<Podcast>> {
                 // This will update the podcast list with nice animations
                 listAdapter.submitList(it)
             })
-            model.selectedPodcast.observe(this, Observer<Podcast> {
-                // TODO Handle selection here?
-            })
 
-            if (savedInstanceState != null)
+            if (savedInstanceState != null && !isSmall())
                 selectionTracker.onRestoreInstanceState(savedInstanceState)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Here our dummy helps us: if he comes back, no podcast is selected any longer!
+        if (actAsDummy)
+            model.selectPodcast(null)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (!actAsDummy) {
+        // Restoring selection will only work on large devices, since
+        // small devices have two podcast list fragments
+        if (!actAsDummy && !isSmall())
             selectionTracker.onSaveInstanceState(outState)
-        }
     }
 
-    private fun onPodcastSelected(position: Int) {
-        model.selectedPodcast.value = model.podcasts.value?.get(position)
+    private fun onPodcastSelected(podcast: Podcast?) {
+        // This will make sure highlight and logo survive configuration changes as needed
+        val oldPosition = model.podcasts.value?.indexOf(listAdapter.lastTappedPodcast) ?: -1
+        val newPosition = model.podcasts.value?.indexOf(podcast) ?: -1
+        listAdapter.lastTappedPodcast = podcast
+        listAdapter.notifyItemChanged(oldPosition)
+        listAdapter.notifyItemChanged(newPosition)
 
-        // On small screen, use navigation to show episode list
-        if (isSmall())
-            Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)
-                    .navigate(if (isLandscape()) R.id.nav_action_global_episodes else R.id.nav_action_podcasts_episodes)
+        // On large screens, show/reset podcast logo
+        if (isLandscape() && podcast != null)
+            Picasso.get().load(podcast.logo)
+                    .placeholder(R.drawable.default_podcast_logo)
+                    .error(R.drawable.default_podcast_logo)
+                    .noFade().fit().into(podcast_logo_large)
+        else if (isLandscape())
+            podcast_logo_large.setImageResource(R.drawable.default_podcast_logo)
     }
 
     /**
@@ -190,7 +227,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
     /**
      * Callback for the podcast list context action mode
      */
-    inner class ActionModeController() : ActionMode.Callback {
+    inner class ActionModeController : ActionMode.Callback {
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             mode?.menuInflater?.inflate(R.menu.menu_podcastlist_context, menu)
@@ -206,8 +243,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
             val podcastToRemove = model.podcasts.value?.filter {
                 selectionTracker.selection.contains(it.feed)
             }
-            if (podcastToRemove != null)
-                model.removePodcast(*podcastToRemove.toTypedArray())
+            podcastToRemove?.let { model.removePodcast(*podcastToRemove.toTypedArray()) }
 
             onDestroyActionMode(mode)
             return true
@@ -222,7 +258,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
     /**
      * Provides a mapping for podcasts to their list position. Feed URLs are used as unique keys.
      */
-    inner class PodcastItemKeyProvider() : ItemKeyProvider<String>(ItemKeyProvider.SCOPE_CACHED) {
+    inner class PodcastItemKeyProvider : ItemKeyProvider<String>(ItemKeyProvider.SCOPE_CACHED) {
 
         override fun getKey(position: Int): String? {
             return model.podcasts.value?.get(position)?.feed
@@ -236,16 +272,13 @@ class PodcastListFragment : AbstractPodcastFragment() {
     /**
      * Selection tracker helper to find ItemDetails for an input event.
      */
-    inner class PodcastItemDetailsLookup() : ItemDetailsLookup<String>() {
+    inner class PodcastItemDetailsLookup : ItemDetailsLookup<String>() {
 
         override fun getItemDetails(event: MotionEvent): ItemDetails<String>? {
             val view = podcast_list.findChildViewUnder(event.x, event.y)
-
-            if (view != null && podcast_list.getChildViewHolder(view) is PodcastListAdapter.ViewHolder) {
-                return (podcast_list.getChildViewHolder(view) as PodcastListAdapter.ViewHolder).getItemDetails()
+            return view?.let {
+                (podcast_list.getChildViewHolder(view) as PodcastListAdapter.ViewHolder).getItemDetails()
             }
-
-            return null
         }
     }
 }
@@ -272,7 +305,23 @@ private class PodcastItemDetail(private val adapterPosition: Int, private val se
  */
 private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewHolder>(diffCallback) {
 
+    /**
+     * The selection tracker used to follow item activation
+     */
     lateinit var selectionTracker: SelectionTracker<String>
+
+    /**
+     * If true, podcast logo image views will be shown
+     */
+    var showLogos = false
+    /**
+     * If true, the position representing the selected podcast is highlighted
+     */
+    var highlightLastTapped = true
+    /**
+     * The podcast last tapped, update this to make highlighting work
+     */
+    var lastTappedPodcast: Podcast? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context),
@@ -281,20 +330,35 @@ private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewH
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val podcast = getItem(position)
-        holder.bind(podcast, selectionTracker.isSelected(podcast.feed))
+        holder.bind(podcast)
+
+        with(holder.itemView) {
+            isActivated = selectionTracker.isSelected(podcast.feed)
+
+            val highlight = highlightLastTapped && podcast == lastTappedPodcast
+            background = ResourcesCompat.getDrawable(resources,
+                    if (highlight) R.drawable.podcast_list_item_highlight
+                    else R.drawable.podcast_list_item_background, null)
+        }
     }
 
     inner class ViewHolder(private val binding: PodcastListItemBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(podcast: Podcast, selected: Boolean) {
+        fun bind(podcast: Podcast) {
             // All the updating is done by Android DataBinding
             binding.setVariable(BR.podcast, podcast)
             binding.executePendingBindings()
 
-            Picasso.get().load(podcast.logo).into(binding.root.podcast_logo)
-
-            binding.root.isActivated = selected
+            with(binding.root) {
+                // Apply some extra padding if the view would visually collide
+                // with the scrollbars otherwise, i.e. the logo image view is hidden
+                podcast_new_count.setPadding(0, 0, if (showLogos) 0 else 8, 0)
+                podcast_progress.setPadding(0, 0, if (showLogos) 0 else 8, 0)
+                podcast_logo.visibility = if (showLogos) VISIBLE else GONE
+                if (showLogos)
+                    Picasso.get().load(podcast.logo).fit().into(podcast_logo)
+            }
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<String>? {

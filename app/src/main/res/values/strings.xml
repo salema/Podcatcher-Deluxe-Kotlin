@@ -26,6 +26,7 @@
         <item quantity="one">One podcast</item>
         <item quantity="other">%d podcasts</item>
     </plurals>
+    <string name="podcast_image">Podcast logo</string>
     <string name="episodes_sort_toggle">Reverse order</string>
     <plurals name="episodes">
         <item quantity="one">One episode</item>

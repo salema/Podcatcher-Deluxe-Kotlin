@@ -24,7 +24,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.types.Episode
-import com.podcatcher.deluxe.model.types.Podcast
 import kotlinx.android.synthetic.main.episode_list_fragment.*
 
 class EpisodeListFragment : AbstractPodcastFragment() {
@@ -43,8 +42,11 @@ class EpisodeListFragment : AbstractPodcastFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        model.selectedPodcast.observe(this, Observer<Podcast> { podcast ->
-            message.text = podcast.name
+        model.selectedPodcast.observe(this, Observer { podcast ->
+            podcast?.let { message.text = it.name }
+        })
+        model.selectedSpecialEpisodeList.observe(this, Observer { list ->
+            list?.let { message.text = it.name }
         })
     }
 
@@ -57,11 +59,5 @@ class EpisodeListFragment : AbstractPodcastFragment() {
             if (isSmall())
                 Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_episodes_episode)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        message.text = model.selectedPodcast.value?.name ?: "Null!"
     }
 }
