@@ -19,8 +19,6 @@ package com.podcatcher.deluxe.fragments
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.types.Episode
 import kotlinx.android.synthetic.main.player_fragment.*
@@ -35,7 +33,7 @@ class PlayerFragment : AbstractPodcastFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_player, menu)
+        inflater?.inflate(R.menu.menu_player, menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +43,7 @@ class PlayerFragment : AbstractPodcastFragment() {
             model.selectedEpisode.value = Episode("Player Episode", "")
 
             if (isSmall())
-                Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment).navigate(R.id.nav_action_global_episode)
+                navigate(R.id.nav_action_global_episode)
         }
     }
 }

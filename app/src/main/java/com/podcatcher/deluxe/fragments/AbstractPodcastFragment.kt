@@ -18,8 +18,11 @@
 package com.podcatcher.deluxe.fragments
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
+import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.PodcastViewModel
 
 abstract class AbstractPodcastFragment : Fragment() {
@@ -32,5 +35,10 @@ abstract class AbstractPodcastFragment : Fragment() {
         model = activity?.run {
             ViewModelProviders.of(this).get(PodcastViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+    }
+
+    protected fun navigate(navAction: Int) {
+        Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)
+                .navigate(navAction)
     }
 }

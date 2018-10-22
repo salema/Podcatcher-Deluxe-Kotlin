@@ -34,7 +34,7 @@ class EpisodeFragment : AbstractPodcastFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_episode, menu)
+        inflater?.inflate(R.menu.menu_episode, menu)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

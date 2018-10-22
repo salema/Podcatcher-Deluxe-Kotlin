@@ -23,11 +23,9 @@ import android.util.AttributeSet
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
@@ -100,7 +98,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        activity?.menuInflater?.inflate(R.menu.menu_podcastlist, menu)
+        inflater?.inflate(R.menu.menu_podcastlist, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -136,8 +134,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
 
                         // On small screen, use navigation to show episode list
                         if (isSmall())
-                            Navigation.findNavController(activity as AppCompatActivity, R.id.navhost_fragment)
-                                    .navigate(if (isLandscape()) R.id.nav_action_global_episodes else R.id.nav_action_podcasts_episodes)
+                            navigate(if (isLandscape()) R.id.nav_action_global_episodes else R.id.nav_action_podcasts_episodes)
 
                         true
                     }.build()

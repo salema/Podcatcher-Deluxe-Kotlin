@@ -83,11 +83,15 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
         _podcasts.value = newList?.sorted()
 
-        _podcasts.value?.forEach { it.status = if (it.status == Podcast.Status.LOADING) Podcast.Status.READY else Podcast.Status.LOADING }
-        _podcasts.value?.forEach { it.addEpisode(Episode("nlsd", "dfd")) }
+        _podcasts.value?.forEach {
+            it.status = if (it.status == Podcast.Status.LOADING) Podcast.Status.READY else Podcast.Status.LOADING
+            it.addEpisode(Episode("nlsd", "dfd"))
+        }
     }
 
     fun removePodcast(vararg podcasts: Podcast) {
         _podcasts.value = _podcasts.value?.filterNot { podcasts.contains(it) }
+        if (!_podcasts.value!!.contains(_selectedPodcast.value))
+            _selectedPodcast.value = null
     }
 }
