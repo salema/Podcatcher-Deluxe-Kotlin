@@ -37,7 +37,7 @@ import com.podcatcher.deluxe.databinding.PodcastListItemBinding
 import com.podcatcher.deluxe.model.types.Podcast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.podcast_list_fragment.*
-import kotlinx.android.synthetic.main.podcast_list_item.view.*
+import kotlinx.android.synthetic.deluxe.podcast_list_item.view.*
 
 /**
  * List fragment to display the list of podcasts.
