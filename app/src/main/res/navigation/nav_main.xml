@@ -29,10 +29,17 @@
         <action
             android:id="@+id/nav_action_podcasts_episodes"
             app:destination="@id/episodeListFragment"
-            app:popUpTo="@id/podcastListFragment"/>
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <action android:id="@+id/nav_action_global_episodes"
         app:destination="@id/episodeListFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
         app:popUpTo="@id/podcastListFragment" />
     <fragment
         android:id="@+id/episodeListFragment"
@@ -41,14 +48,22 @@
         tools:layout="@layout/episode_list_fragment">
         <action
             android:id="@+id/nav_action_episodes_episode"
-            app:destination="@id/episodeFragment" />
+            app:destination="@id/episodeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <action android:id="@+id/nav_action_global_episode"
         app:destination="@id/episodeFragment"
-        app:popUpTo="@+id/episodeListFragment"/>
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        app:popUpTo="@+id/episodeListFragment" />
     <fragment
         android:id="@+id/episodeFragment"
         android:name="com.podcatcher.deluxe.fragments.EpisodeFragment"
         android:label="EpisodeFragment"
-        tools:layout="@layout/episode_fragment"/>
+        tools:layout="@layout/episode_fragment" />
 </navigation>
