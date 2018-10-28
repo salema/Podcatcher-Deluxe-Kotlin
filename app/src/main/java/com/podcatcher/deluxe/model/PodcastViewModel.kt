@@ -33,6 +33,8 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
         Picasso.get().setIndicatorsEnabled(BuildConfig.DEBUG)
     }
 
+    private val repo = PodcastRepository.getInstance(app.applicationContext)
+
     enum class SpecialEpisodeList { ALL_PODCASTS, DOWNLOADS, PLAYLIST }
 
     private var _selectedSpecialEpisodeList = MutableLiveData<SpecialEpisodeList?>()
@@ -60,38 +62,25 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
     val selectedEpisode: MutableLiveData<Episode> by lazy { MutableLiveData<Episode>() }
 
-    private lateinit var _podcasts: MutableLiveData<List<Podcast>>
-    val podcasts: LiveData<List<Podcast>> by lazy {
-
-
-        _podcasts = MutableLiveData()
-        _podcasts.value = listOf(
-                Podcast("Radiolab", "http://media.wnyc.org/i/raw/1/Radiolab_WNYCStudios_1400_2dq02Dh.png", "http://feeds.wnyc.org/radiolab", mutableListOf()),
-                Podcast("This American Life", "http://files.thisamericanlife.org/sites/all/themes/thislife/img/tal-name-1400x1400.png", "http://www.thisamericanlife.org/podcast/rss.xml", mutableListOf()),
-                Podcast("Heldenstadt", "https://images.podigee.com/0x,sEm-lJYlWr9ZdNbHTarf6cC2z5C-YBOy4Z34JkiILpis=/https://cdn.podigee.com/uploads/u2989/7ee53a3d-0973-49c1-a728-f964c403e72c.jpg", "https://heldenstadt.podigee.io/feed/mp3", mutableListOf()),
-                Podcast("Security Now!", "http://twit.cachefly.net/coverart/sn/sn1400.jpg", "https://feeds.twit.tv/sn.xml", mutableListOf())
-        ).sorted()
-
-        _podcasts
-    }
+    val podcasts = repo.getSubcriptions()
 
     fun addPodcast() {
-        val newPodcast = Podcast("Testpodcast", "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png", UUID.randomUUID().toString(), mutableListOf())
+        val newPodcast = Podcast("Testpodcast", UUID.randomUUID().toString())
+        newPodcast.logoUrl = "https://cdn.learn2crack.com/wp-content/uploads/2016/02/cover5-1024x483.png"
+        newPodcast.subscribed = true
 
-        val newList = _podcasts.value?.toMutableList()
-        newList?.add(newPodcast)
-
-        _podcasts.value = newList?.sorted()
-
-        _podcasts.value?.forEach {
-            it.status = if (it.status == Podcast.Status.LOADING) Podcast.Status.READY else Podcast.Status.LOADING
-            it.addEpisode(Episode("nlsd", "dfd"))
-        }
+        repo.add(newPodcast)
     }
 
     fun removePodcast(vararg podcasts: Podcast) {
-        _podcasts.value = _podcasts.value?.filterNot { podcasts.contains(it) }
-        if (!_podcasts.value!!.contains(_selectedPodcast.value))
+        podcasts.forEach { repo.remove(it) }
+        if (!podcasts.contains(_selectedPodcast.value))
             _selectedPodcast.value = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        repo.onAppClosed()
     }
 }

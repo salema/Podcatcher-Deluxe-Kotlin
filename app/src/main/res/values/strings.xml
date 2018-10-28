@@ -22,13 +22,16 @@
     <string name="podcast_none_selected">No podcast selected</string>
     <string name="podcast_add_title">New podcast</string>
     <string name="podcast_loading">Loading&#8230;</string>
+    <string name="podcast_failed">Failed!</string>
     <plurals name="podcasts">
+        <item quantity="zero">No podcasts</item>
         <item quantity="one">One podcast</item>
         <item quantity="other">%d podcasts</item>
     </plurals>
     <string name="podcast_image">Podcast logo</string>
     <string name="episodes_sort_toggle">Reverse order</string>
     <plurals name="episodes">
+        <item quantity="zero">No episodes</item>
         <item quantity="one">One episode</item>
         <item quantity="other">%d episodes</item>
     </plurals>

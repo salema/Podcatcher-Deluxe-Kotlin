@@ -1,0 +1,54 @@
+[
+  {
+    "name": "This American Life",
+    "feed": "http://feeds.thisamericanlife.org/talpodcast"
+  },
+  {
+    "name": "CRE",
+    "feed": "http://feeds.metaebene.me/cre/mp3"
+  },
+  {
+    "name": "Linux' Outlaws",
+    "feed": "http://feeds.feedburner.com/linuxoutlaws"
+  },
+  {
+    "name": "GEO",
+    "feed": "http://www.geo.de/GEOaudio/index.xml"
+  },
+  {
+    "name": "SGU",
+    "feed": "https://www.theskepticsguide.org/premium"
+  },
+  {
+    "name": "Twit Live",
+    "feed": "http://podcatcher-deluxe.com/sites/default/files/feeds/twit_live.xml"
+  },
+  {
+    "name": "Freakonomics",
+    "feed": "http://feeds.feedburner.com/freakonomicsradio"
+  },
+  {
+    "name": "Anstalt",
+    "feed": "http://www.zdf.de/ZDFmediathek/podcast/2085930?view=podcast"
+  },
+  {
+    "name": "Apfelklatsch",
+    "feed": "http://www.apfelklatsch.de/feed/podcast/"
+  },
+  {
+    "name": "Radio Ambulante",
+    "feed": "http://feeds.feedburner.com/RadioAmbulante-English"
+  },
+  {
+    "name": "Radiolab",
+    "feed": "http://feeds.wnyc.org/radiolab"
+  },
+  {
+    "name": "Heldenstadt",
+    "feed": "https://heldenstadt.podigee.io/feed/mp3"
+  },
+  {
+    "name": "Security Now!",
+    "feed": "https://feeds.twit.tv/sn.xml"
+  }
+]

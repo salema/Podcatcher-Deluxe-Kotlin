@@ -194,7 +194,7 @@ class PodcastListFragment : AbstractPodcastFragment() {
 
         // On large screens, show/reset podcast logo
         if (isLandscape() && podcast != null)
-            Picasso.get().load(podcast.logo)
+            Picasso.get().load(podcast.logoUrl)
                     .placeholder(R.drawable.default_podcast_logo)
                     .error(R.drawable.default_podcast_logo)
                     .noFade().fit().into(podcast_logo_large)
@@ -353,7 +353,7 @@ private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewH
                 podcast_progress.setPadding(0, 0, if (showLogos) 0 else 8, 0)
                 podcast_logo.visibility = if (showLogos) VISIBLE else GONE
                 if (showLogos)
-                    Picasso.get().load(podcast.logo).fit().into(podcast_logo)
+                    Picasso.get().load(podcast.logoUrl).fit().into(podcast_logo)
             }
         }
 
@@ -373,8 +373,8 @@ private class PodcastListAdapter : ListAdapter<Podcast, PodcastListAdapter.ViewH
             override fun areContentsTheSame(oldItem: Podcast, newItem: Podcast): Boolean {
                 // TODO Make sure the podcast properties actually shown in the list are compared here
                 return oldItem.name == newItem.name &&
-                        oldItem.status == oldItem.status &&
-                        oldItem.episodes.size == newItem.episodes.size
+                        oldItem.logoUrl == newItem.logoUrl &&
+                        oldItem.status == newItem.status
             }
         }
     }

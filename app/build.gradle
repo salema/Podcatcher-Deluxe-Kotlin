@@ -33,6 +33,15 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        // Remove sample files only needed for debug
+        applicationVariants.all { variant ->
+            if (variant.buildType.name != 'debug') {
+                variant.mergeAssets.doLast {
+                    delete(fileTree(dir: variant.mergeAssets.outputDir, includes: ['sample_podcasts.json']))
+                }
+            }
+        }
     }
 
     flavorDimensions "media", "edition"
@@ -76,5 +85,11 @@ dependencies {
     implementation 'android.arch.navigation:navigation-fragment-ktx:+'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
+    kapt 'androidx.room:room-compiler:+'
+    implementation 'androidx.room:room-runtime:+'
+
+    implementation 'android.arch.work:work-runtime-ktx:+'
+
     implementation 'com.squareup.picasso:picasso:+'
+    implementation 'com.google.code.gson:gson:+'
 }

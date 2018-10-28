@@ -29,7 +29,7 @@
 
         <variable
             name="podcast"
-            type="com.podcatcher.deluxe.model.types.Podcast" />
+            type="com.podcatcher.deluxe.model.types.PodcastWithEpisodes" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +58,7 @@
 
         <TextView
             android:id="@+id/podcast_caption"
-            android:text="@{podcast.status == Status.READY ? @plurals/episodes(podcast.episodes.size, podcast.episodes.size) : @string/podcast_loading}"
+            android:text="@{podcast.status == Status.READY ? @plurals/episodes(podcast.episodes.size, podcast.episodes.size) : podcast.status == Status.LOADING ? @string/podcast_loading : @string/podcast_failed }"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"

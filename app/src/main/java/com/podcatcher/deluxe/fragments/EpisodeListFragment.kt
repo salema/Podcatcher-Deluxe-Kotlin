@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import com.podcatcher.deluxe.R
 import com.podcatcher.deluxe.model.types.Episode
 import kotlinx.android.synthetic.main.episode_list_fragment.*
+import java.util.*
 
 class EpisodeListFragment : AbstractPodcastFragment() {
 
@@ -52,7 +53,7 @@ class EpisodeListFragment : AbstractPodcastFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         select_episode_button.setOnClickListener {
-            model.selectedEpisode.value = Episode("Episode list episode", "")
+            model.selectedEpisode.value = Episode(UUID.randomUUID().toString(), "Episode list episode", UUID.randomUUID().toString(), null)
 
             if (isSmall())
                 navigate(R.id.nav_action_episodes_episode)
