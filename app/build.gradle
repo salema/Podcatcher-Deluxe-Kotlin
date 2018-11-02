@@ -18,6 +18,11 @@ android {
         enabled = true
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         debug {
             versionNameSuffix "-debug"
@@ -71,9 +76,13 @@ android {
     }
 }
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -92,4 +101,9 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:+'
     implementation 'com.google.code.gson:gson:+'
+
+    // Not sure why I would need this all of a sudden (for BaseObservable)
+    implementation 'androidx.databinding:databinding-runtime:3.2.1'
+
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:+'
 }

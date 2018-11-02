@@ -57,29 +57,28 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
     var description: String? = null
 
     /**
-     * Whether the entity is considered explicit, i.e. contains adult-only material.
+     * Whether the entity is considered explicit, i.e. contains adult-only material
      */
     var explicit = false
 
     /**
-     * The element's file size
+     * The element's file size in bytes.
      */
     @ColumnInfo(name = "file_size")
     var fileSize: Long = -1
 
     /**
-     * Normalize the given URL string. See
-     * http://en.wikipedia.org/wiki/URL_normalization for details.
+     * Normalize the given URL string.
+     * See http://en.wikipedia.org/wiki/URL_normalization for details.
      *
      * @param spec The URL string to normalize.
      * @return The same URL string with unchanged semantics, but normalized
-     * syntax. When not a valid URL or `null`, the string
-     * given is returned unaltered.
+     * syntax. When not a valid URL, the string given is returned unaltered.
      */
     protected fun normalizeUrl(spec: String): String {
         try {
             // Trim white spaces, normalize path, throw exception if mal-formed
-            val url = URI(spec.trim { it <= ' ' }).normalize().toURL()
+            val url = URI(spec.trim()).normalize().toURL()
 
             // Make sure protocol and server are lower case
             val scheme = url.protocol.toLowerCase(Locale.US)
@@ -98,12 +97,10 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
                 needsPort = false
 
             // Reconstruct the string
-            return (scheme + "://" + host + (if (needsPort) ":" + url.port else "")
-                    + path + if (url.query == null) "" else "?" + url.query)
+            return "$scheme://$host" + (if (needsPort) ":" + url.port else "") +
+                    "$path" + (if (url.query != null) "?" + url.query else "")
         } catch (e: MalformedURLException) {
             // We simply return the original string
-            return spec
-        } catch (e: NullPointerException) {
             return spec
         } catch (e: URISyntaxException) {
             return spec
@@ -113,15 +110,14 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
     }
 
     /**
-     * Check whether the given string values indicated that the feed entity is
-     * considered explicit.
+     * Check whether the given string value indicates that the feed entity is
+     * considered explicit (adult-only content).
      *
-     * @param value The string value from the feed, `null` results in
-     * `false`.
+     * @param value The string value from the feed, `null` results in `false`.
      * @return The explicit flag.
      */
-    protected fun parseExplicit(value: String?): Boolean {
-        return value != null && value.trim { it <= ' ' }.toLowerCase(Locale.US) == RSS.EXPLICIT_POSITIVE_VALUE
+    protected fun parseExplicit(value: String): Boolean {
+        return value.trim().toLowerCase(Locale.US) == RSS.EXPLICIT_POSITIVE_VALUE
     }
 
     /**
@@ -132,24 +128,22 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
      * @return The date or `null` if the string could not be parsed.
      */
     protected fun parseDate(dateString: String): Date? {
-        var dateString = dateString
         // Make sure to remove any whitespaces that might make parsing fail
-        dateString = dateString.trim { it <= ' ' }
+        val candidate = dateString.trim()
 
         try {
             // SimpleDateFormat is not thread safe
             synchronized(DATE_FORMATTER) {
-                return DATE_FORMATTER.parse(dateString)
+                return DATE_FORMATTER.parse(candidate)
             }
-        } catch (e: ParseException) {
+        } catch (outer: ParseException) {
             // The default format is not available, try all the other formats we support...
             for (format in DATE_FORMAT_TEMPLATE_ALTERNATIVES)
                 try {
-                    return SimpleDateFormat(format, Locale.US).parse(dateString)
-                } catch (e1: ParseException) {
+                    return SimpleDateFormat(format, Locale.US).parse(candidate)
+                } catch (inner: ParseException) {
                     // Does not fit the format, pass and try next
                 }
-
         }
 
         // None of the formats matched
@@ -159,16 +153,16 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
     companion object {
 
         /**
-         * The date format used by RSS feeds
+         * The date format used by RSS feeds.
          */
-        private val DATE_FORMAT_TEMPLATE = "EEE, dd MMM yy HH:mm:ss zzz"
+        private const val DATE_FORMAT_TEMPLATE = "EEE, dd MMM yy HH:mm:ss zzz"
         /**
-         * Our formatter used when reading the episode item's date string
+         * Our formatter used when reading the entities date string.
          */
         private val DATE_FORMATTER = SimpleDateFormat(DATE_FORMAT_TEMPLATE, Locale.US)
         /**
          * The alternative date formats supported because they are used by some
-         * feeds, these are all tried in the given order if the default fails
+         * feeds, these are all tried in the given order if the default fails.
          */
         private val DATE_FORMAT_TEMPLATE_ALTERNATIVES = arrayOf("EEE, dd MMM yy", "yy-MM-dd", "dd MMM yy HH:mm:ss zzz", "EEE,dd MMM yy HH:mm:ss zzz")
     }
