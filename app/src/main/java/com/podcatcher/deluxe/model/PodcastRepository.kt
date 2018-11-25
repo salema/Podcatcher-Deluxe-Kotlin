@@ -20,9 +20,7 @@ package com.podcatcher.deluxe.model
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.*
 import com.podcatcher.deluxe.BuildConfig
 import com.podcatcher.deluxe.model.daos.EpisodeDao
@@ -134,7 +132,7 @@ class PodcastRepository private constructor(context: Context) {
         }
     }
 
-    fun getSubcriptions(): LiveData<List<PodcastWithEpisodes>> {
+    fun getSubscriptions(): LiveData<List<PodcastWithEpisodes>> {
         return db.podcastDao().getSubscriptions()
     }
 

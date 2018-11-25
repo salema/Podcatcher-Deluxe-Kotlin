@@ -18,13 +18,9 @@
 package com.podcatcher.deluxe.model
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.podcatcher.deluxe.BuildConfig
 import com.podcatcher.deluxe.model.types.Episode
 import com.podcatcher.deluxe.model.types.Podcast
-import com.squareup.picasso.Picasso
 import java.util.*
 
 class PodcastViewModel(app: Application) : AndroidViewModel(app) {
@@ -62,7 +58,7 @@ class PodcastViewModel(app: Application) : AndroidViewModel(app) {
 
     val selectedEpisode: MutableLiveData<Episode> by lazy { MutableLiveData<Episode>() }
 
-    val podcasts = repo.getSubcriptions()
+    val podcasts = repo.getSubscriptions()
 
     fun addPodcast() {
         val newPodcast = Podcast("Testpodcast", UUID.randomUUID().toString())

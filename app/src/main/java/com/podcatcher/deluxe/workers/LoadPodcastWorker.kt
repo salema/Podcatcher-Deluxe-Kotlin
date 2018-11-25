@@ -28,6 +28,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.ByteArrayInputStream
+import java.util.*
 
 class LoadPodcastWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     private val TAG by lazy { LoadPodcastWorker::class.java.simpleName }
@@ -66,10 +67,12 @@ class LoadPodcastWorker(context: Context, workerParams: WorkerParameters) : Work
                     val parser = parserFactory.newPullParser()
                     parser.setInput(ByteArrayInputStream(feedContent), null)
                     val episodes = podcast.parse(parser)
+
                     Log.i(TAG, "Loaded podcast: ${podcast.name}, found ${episodes.size} episodes")
                     db.episodeDao().insert(*episodes.toTypedArray())
 
                     podcast.fileSize = feedContent.size.toLong()
+                    podcast.lastSuccessfulLoad = Date()
                     podcast.status = Podcast.Status.READY
                     db.podcastDao().update(podcast)
                 }
@@ -79,6 +82,7 @@ class LoadPodcastWorker(context: Context, workerParams: WorkerParameters) : Work
                 return Result.SUCCESS
             } catch (ex: Exception) {
                 podcast.status = Podcast.Status.FAILED
+                podcast.failedLoadAttemptCount++
                 db.podcastDao().update(podcast)
 
                 Log.e(TAG, "Error loading podcast $name", ex)

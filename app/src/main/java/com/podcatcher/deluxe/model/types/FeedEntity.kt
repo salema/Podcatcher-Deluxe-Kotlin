@@ -75,7 +75,7 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
      * @return The same URL string with unchanged semantics, but normalized
      * syntax. When not a valid URL, the string given is returned unaltered.
      */
-    protected fun normalizeUrl(spec: String): String {
+    protected open fun normalizeUrl(spec: String): String {
         try {
             // Trim white spaces, normalize path, throw exception if mal-formed
             val url = URI(spec.trim()).normalize().toURL()
@@ -86,10 +86,10 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
 
             // Normalize path to be at least "/"
             var path: String? = url.path
-            if (path == null || path.isEmpty())
+            if (path.isNullOrBlank())
                 path = "/"
-            else if (path.length > 1 && path.endsWith("/") && url.query == null)
-                path = path.substring(0, path.length - 1)
+            else if (url.query.isNullOrBlank())
+                path = path.replace("/$".toRegex(), "")
 
             // Look at ports and only keep non-defaults
             var needsPort = url.port != -1
@@ -98,7 +98,7 @@ abstract class FeedEntity(name: String?, url: String) : BaseObservable() {
 
             // Reconstruct the string
             return "$scheme://$host" + (if (needsPort) ":" + url.port else "") +
-                    "$path" + (if (url.query != null) "?" + url.query else "")
+                    "$path" + (if (!url.query.isNullOrBlank()) "?" + url.query else "")
         } catch (e: MalformedURLException) {
             // We simply return the original string
             return spec
